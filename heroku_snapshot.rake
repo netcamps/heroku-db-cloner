@@ -1,4 +1,3 @@
-
 namespace :clone do
 
   task :cache_flush  do
@@ -14,7 +13,7 @@ namespace :clone do
   
   task :clone_heroku => :environment do
     puts "cloning Heroku db..."
-    Bundler.with_clean_env { sh "heroku pgbackups:capture" }
+    Bundler.with_clean_env { sh "heroku pgbackups:capture --expire" }
   end
   
   task :download_clone do
@@ -24,7 +23,7 @@ namespace :clone do
   
   # TODO there's an error here...
   task :import_clone do
-    Bundler.with_clean_env { sh "pg_restore --verbose --clean --no-acl --no-owner -h localhost -U chris -d #{Rails.configuration.database_configuration["development"]["database"]} latest.dump" }
+    Bundler.with_clean_env { sh "pg_restore --verbose -O -d #{Rails.configuration.database_configuration["development"]["database"]} latest.dump" }
   end
   
   task :remove_dump do
